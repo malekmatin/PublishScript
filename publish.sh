@@ -76,14 +76,14 @@ get_all_tags() {
 
 find_last_tag() { 
     if [ ${#tags[@]} -gt 0 ]; then
-    last_tag="${tags[$((${#tags[@]} - 1))]}"
-    last_commit="${commits[$((${#commits[@]} - 1))]}"
+        last_tag="${tags[$((${#tags[@]} - 1))]}"
+        last_commit="${commits[$((${#commits[@]} - 1))]}"
+        print "Last tag: $last_tag"
     else
+        last_tag="0.0.0"
         warning_print "No tags found in the repository."
     fi
     print ""
-
-    print "Last tag: $last_tag"
 }
 
 parse_last_tag() { 
@@ -228,7 +228,7 @@ push_tags() {
 }
 
 validate_version_header() { 
-    file="version.h"
+    file="./include/version.h"
     search_string="#define VERSION \"$last_tag\""
     pwd_res=$(pwd)
 
@@ -237,7 +237,7 @@ validate_version_header() {
             print "Found version.h"
         fi
     else
-        error_print "Can not find version.h at $pwd_res"
+        error_print "Can not find version.h at $pwd_res/include"
         exit 0
     fi
 
