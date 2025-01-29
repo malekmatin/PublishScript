@@ -274,7 +274,7 @@ check_branch() {
 }
 
 commit_header_change() { 
-    git add ./include/version.h
+    git add include/version.h
     git commit -m "[Publish Script] Updated version header from $last_tag to $new_tag"
     git push origin develop
 }
