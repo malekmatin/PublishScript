@@ -29,7 +29,7 @@ echo -e "\nCtrl+C pressed. Stopping input..."
 }
 
 navigate_to_repo() { 
-    cd ../pubsctest/PubTest
+    cd ..
 }
 
 check_repo_clean() { 
