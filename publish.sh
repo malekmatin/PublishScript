@@ -252,7 +252,7 @@ validate_version_header() {
 }
 
 change_verion_header() { 
-    source_file="version.h"
+    source_file="./include/version.h"
 
     old_value="\"$last_tag\""
     new_value="\"$new_tag\""
@@ -274,7 +274,7 @@ check_branch() {
 }
 
 commit_header_change() { 
-    git add version.h
+    git add ./include/version.h
     git commit -m "[Publish Script] Updated version header from $last_tag to $new_tag"
     git push origin develop
 }
