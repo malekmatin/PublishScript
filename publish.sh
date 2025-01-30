@@ -282,7 +282,7 @@ commit_header_change() {
 
 isverbose=$(check_verbose_flag "$@")
 
-navigate_to_repo
+#navigate_to_repo
 
 check_git_repo
 
