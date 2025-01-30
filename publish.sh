@@ -29,7 +29,7 @@ echo -e "\nCtrl+C pressed. Stopping input..."
 }
 
 navigate_to_repo() { 
-    cd ..
+    cd .
 }
 
 check_repo_clean() { 
@@ -105,6 +105,16 @@ parse_last_tag() {
     fi
 }
 
+check_identity() { 
+    if [ -f identity.env ]; then
+        source identity.env
+        package_name=$PACKAGE_NAME
+    else
+        echo "identity.env file not found!"
+        exit 1
+    fi
+}
+
 check_git_repo() { 
     if ! git rev-parse --is-inside-work-tree &>/dev/null; then
         error_print "Not inside a Git repository."
@@ -164,12 +174,12 @@ input_new_tag() {
 
     PS3="Please select an option: "
 
-    select option in "$update_major_option (Major)" "$update_minor_option (Minor)" "$update_patch_option (Patch)"; do
+    select option in "$update_patch_option (Patch)" "$update_minor_option (Minor)" "$update_major_option (Major)"; do
         case $option in
-            "$update_major_option (Major)")
-                echo "You selected $update_major_option"
-                new_tag=$update_major_option
-                increment_fild="Major"
+            "$update_patch_option (Patch)")
+                echo "You selected $update_patch_option"
+                new_tag=$update_patch_option
+                increment_fild="Patch"
                 break
                 ;;
             "$update_minor_option (Minor)")
@@ -178,10 +188,10 @@ input_new_tag() {
                 increment_fild="Minor"
                 break
                 ;;
-            "$update_patch_option (Patch)")
-                echo "You selected $update_patch_option"
-                new_tag=$update_patch_option
-                increment_fild="Patch"
+            "$update_major_option (Major)")
+                echo "You selected $update_major_option"
+                new_tag=$update_major_option
+                increment_fild="Major"
                 break
                 ;;
             *)
@@ -229,7 +239,8 @@ push_tags() {
 
 validate_version_header() { 
     file="./include/version.h"
-    search_string="#define VERSION \"$last_tag\""
+    search_string="#define ${package_name}_VERSION \"$last_tag\""
+
     pwd_res=$(pwd)
 
     if [ -e "$file" ]; then
@@ -252,12 +263,12 @@ validate_version_header() {
 }
 
 change_verion_header() { 
-    source_file="./include/version.h"
+    source_file="./include/version.h" 
 
     old_value="\"$last_tag\""
     new_value="\"$new_tag\""
 
-    sed -i '' "s/#define VERSION $old_value/#define VERSION $new_value/" "$source_file"
+    sed -i '' "s/#define ${package_name}_VERSION $old_value/#define ${package_name}_VERSION $new_value/" "$source_file"
 }
 
 check_branch() { 
@@ -283,6 +294,8 @@ commit_header_change() {
 isverbose=$(check_verbose_flag "$@")
 
 #navigate_to_repo
+
+check_identity
 
 check_git_repo
 
