@@ -55,21 +55,19 @@ check_verbose_flag() {
     echo false
 }
 
-get_all_tags() { 
+get_all_tags() {
     tags=()
     commits=()
-
-    while IFS=" " read -r commit_hash tag_name; do
-        clean_tag_name="${tag_name/refs\/tags\//}"
-
+    while IFS=" " read -r commit_hash ref_name; do
+        clean_tag_name="${ref_name#refs/tags/}"
         tags+=("$clean_tag_name")
         commits+=("$commit_hash")
-    done < <(git show-ref --tags)
+    done < <(git for-each-ref --sort=creatordate --format='%(objectname) %(refname)' refs/tags)
 
     if [[ "$isverbose" == "true" ]]; then
-        echo "Tags and their corresponding commit hashes:"
+        echo "Tags and their corresponding commit hashes (oldest to newest):"
         for i in "${!tags[@]}"; do
-            echo "${tags[$i]} -> ${commits[$i]}"  
+            echo "${tags[$i]} -> ${commits[$i]}"
         done
     fi
 }
