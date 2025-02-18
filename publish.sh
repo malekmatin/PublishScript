@@ -133,9 +133,15 @@ check_git_pull_needed() {
 
     # Compare local and remote
     if [ "$LOCAL" = "$REMOTE" ]; then
-        if [[ "$isverbose" == "true" ]]; then
-            print "Your branch is up-to-date."
+        print "Your branch is up-to-date."
+        tag_on_head=$(git describe --exact-match --tags HEAD 2>/dev/null || true)
+        if [ -z "$tag_on_head" ]; then
+            print "Latest commit doesn't have tag."
+        else
+            print "Latest commit has tag: $tag_on_head"
+            exit 1
         fi
+
     elif [ "$LOCAL" = "$BASE" ]; then
         error_print "Your branch is behind the remote. A pull is required."
         exit 0
